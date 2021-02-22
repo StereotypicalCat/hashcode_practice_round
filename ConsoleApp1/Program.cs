@@ -21,31 +21,15 @@ namespace ConsoleApp1
                 new Pizza(new []{"tomato", "mushroom", "basil"}),
                 new Pizza(new []{"chicken", "basil"})
             };
-            
 
 
 
-        }
-    }
 
-    public class Udregner
-    {
-        private List<Delivery> deliveries;
+            Udregner Udr = new UdregnerImpl(pizzas, teams);
 
-
-        public Udregner()
-        {
-            deliveries = new List<Delivery>();
-        }
-
-        public List<Delivery> Algoritm()
-        {
-            deliveries.Add(new Delivery(3));
-
-
+            Udr.Algoritm();
 
         }
-
     }
 
     public class Delivery
