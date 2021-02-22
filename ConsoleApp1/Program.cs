@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks.Sources;
 
 namespace ConsoleApp1
 {
@@ -13,7 +14,7 @@ namespace ConsoleApp1
                 1, 2, 1
             };
 
-            var pizzas = new Pizza[]
+            var pizzas = new List<Pizza>
             {
                 new Pizza(new []{"onion", "pepper", "olive"}),
                 new Pizza(new []{"mushroom", "tomato", "basil"}),
@@ -23,12 +24,28 @@ namespace ConsoleApp1
             };
 
 
+            pizzas.Sort(delegate (Pizza x, Pizza y)
+            {
+                if (x.ingredients.Length > y.ingredients.Length) return 1;
+                else
+                {
+                    return -1;
+                }
+            });
 
 
-            Udregner Udr = new UdregnerImpl(pizzas, teams);
+            Udregner Udr = new UdregnerImpl(pizzas.ToArray(), teams);
 
-            Udr.Algoritm();
+            var del = Udr.Algoritm();
 
+            int score = 0;
+
+            foreach (var d in del)
+            {
+               score += d.calculateScore();
+            }
+
+            Console.WriteLine(score);
         }
     }
 
@@ -60,7 +77,7 @@ namespace ConsoleApp1
                 ingrediences.AddRange(p.ingredients);
             }
 
-            score = ingrediences.Distinct().Count();
+            score = (int) Math.Pow( ingrediences.Distinct().Count(),2);
 
             return score;
         }
