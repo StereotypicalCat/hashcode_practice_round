@@ -27,24 +27,34 @@ namespace ConsoleApp1.Udregnere
 
                 var candidateAnswers = new candidateBestAnswer[3];
 
-                if (rarities.Count >= 2)
+                if (rarities.Count >= 2  && teams[0] > 0)
                 {
                     candidateAnswers[0] = CreateDeliveryWithSizeOf(2, rarities);
                 }
 
-                if (rarities.Count >= 3)
+                if (rarities.Count >= 3 && teams[1] > 0)
                 {
                     candidateAnswers[1] = CreateDeliveryWithSizeOf(3, rarities);
                 }
 
-                if (rarities.Count >= 4)
+                if (rarities.Count >= 4 && teams[2] > 0)
                 {
                     candidateAnswers[2] = CreateDeliveryWithSizeOf(4, rarities);
                 }
-                // Select the one with the highest new score.
-                var scores = candidateAnswers.Where(x => x != null).Select(x => x.candidateDelivery.CalculateScore(pizzas)/x.candidateDelivery.Pizzas.Count).ToArray();
-                var bestIndex = Array.IndexOf(scores, scores.Max());
 
+                var scores = new Nullable<float>[3];
+
+                var skew = 0.5f;
+                
+                scores[0] = candidateAnswers[0]?.candidateDelivery.CalculateScore(pizzas)/(Math.Max(2 - skew, 1));
+                scores[1] = candidateAnswers[1]?.candidateDelivery.CalculateScore(pizzas)/(Math.Max(3 - skew, 1));
+                scores[2] = candidateAnswers[2]?.candidateDelivery.CalculateScore(pizzas)/(Math.Max(4 - skew, 1));
+
+                var bestIndex = Nullable.Compare(scores[0], scores[1]) > 0 ? (Nullable.Compare(scores[0], scores[2]) > 0 ? 0 : 2) : (Nullable.Compare(scores[1], scores[2]) > 0 ? 1 : 2);
+                
+                
+                teams[bestIndex]--;
+                
                 rarities = candidateAnswers[bestIndex].Rarities;
                 deliveries.Add(candidateAnswers[bestIndex].candidateDelivery);
 
@@ -54,7 +64,8 @@ namespace ConsoleApp1.Udregnere
                 {
                     canContinue = false;
                 }
-                
+
+                Console.WriteLine(((1 - (((float) rarities.Count) / ((float) pizzas.Length))))*100 + "% done");
             }
 
 
@@ -159,18 +170,16 @@ namespace ConsoleApp1.Udregnere
             for (int i = 1; i < size; i++)
             {
 
-                var bestPizzas = RaritiesToBestScoreDictionary(rarities,
+                var bestPizzaIndex = RaritiesToBestScoreDictionary(rarities,
                     candidateDelivery.Pizzas.Select(p => pizzas[p].ingredients).SelectMany(x => x).ToArray());
 
-                var indexOfHighestValue = bestPizzas.Keys.Max();
-                
-                candidateDelivery.AddPizza(bestPizzas[indexOfHighestValue]);
+                candidateDelivery.AddPizza(bestPizzaIndex);
 
                 foreach (var rarity in rarities)
                 {
-                    if (rarity.Value.Contains(bestPizzas[indexOfHighestValue]))
+                    if (rarity.Value.Contains(bestPizzaIndex))
                     {
-                        rarity.Value.Remove(bestPizzas[indexOfHighestValue]);
+                        rarity.Value.Remove(bestPizzaIndex);
                         break;
                     }
 
@@ -188,10 +197,11 @@ namespace ConsoleApp1.Udregnere
             return candidateBestAnswer;
         }
 
-        private SortedDictionary<float, int> RaritiesToBestScoreDictionary(SortedDictionary<float, List<int>> rarities, string[] ingredients)
+        private int RaritiesToBestScoreDictionary(SortedDictionary<float, List<int>> rarities, string[] ingredients)
         {
-            
-            SortedDictionary<float, int> scoreIncreases = new SortedDictionary<float, int>();
+
+            int indexOfBestNewPizza = -1;
+            float bestScore = float.MinValue;
 
             rarities = dirtyFix(rarities);
             
@@ -200,16 +210,25 @@ namespace ConsoleApp1.Udregnere
 
                 var newIngredients = pizzas[entry.Value[0]].ingredients;
 
-                var totalNewIngredientsAdded =
-                    newIngredients.Concat(ingredients).GroupBy(x => x).Count(g => Enumerable.Count<string>(g) > 1);
+                int totalNewIngredientsAdded = 0;
+                foreach (var ingredient in newIngredients)
+                {
+                    if (!ingredients.Contains(ingredient))
+                    {
+                        totalNewIngredientsAdded++;
+                    }
+                }
 
                 var newScore = totalNewIngredientsAdded / entry.Key;
 
-                scoreIncreases[newScore] = entry.Value[0];
-                // Get new total ingredients that would be added to pizza
+                if (newScore > bestScore)
+                {
+                    bestScore = newScore;
+                    indexOfBestNewPizza = entry.Value[0];
+                }
             }
 
-            return scoreIncreases;
+            return indexOfBestNewPizza;
 
         }
 
