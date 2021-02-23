@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace ConsoleApp1
 {
@@ -22,9 +23,25 @@ namespace ConsoleApp1
         /// </summary>
         /// <param name="solution"></param>
         /// <param name="teamsSizes"></param>
-        public static void ExportSolution(int[] solution, int[] teamsSizes)
+        public static void ExportSolution(List<NumberBasedDelivery> solution, int[] teamsSizes)
         {
+            List<String> answerLines = new List<string>();
+            
+            answerLines.Add(solution.Count.ToString());
 
+            foreach (var delivery in solution)
+            {
+                string line = delivery.TeamSize.ToString();
+                foreach (var index in delivery.Pizzas)
+                {
+                    line += " " + index;
+                }
+                answerLines.Add(line);
+            }
+
+            var outputPath = Directory.GetCurrentDirectory() + "\answer.txt";
+            
+            File.WriteAllLines(outputPath, answerLines);
         }
         
         
