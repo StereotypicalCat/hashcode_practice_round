@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks.Sources;
 
 namespace ConsoleApp1
 {
     class Program
     {
-
-        public int bestScore;
-        public int bestDelivery;
-        
         static void Main(string[] args)
         {
             var teams = new int[]
@@ -17,7 +14,7 @@ namespace ConsoleApp1
                 1, 2, 1
             };
 
-            var pizzas = new Pizza[]
+            var pizzas = new List<Pizza>
             {
                 new Pizza(new []{"onion", "pepper", "olive"}),
                 new Pizza(new []{"mushroom", "tomato", "basil"}),
@@ -26,76 +23,30 @@ namespace ConsoleApp1
                 new Pizza(new []{"chicken", "basil"})
             };
 
-        }
 
-        static void solve(int[] teams, Pizza[] pizzas, Delivery[] deliveries)
-        {
-            for (int i = 0; i < teams[0]; i++)
+            pizzas.Sort(delegate (Pizza x, Pizza y)
             {
-                for (int j = i; j < pizzas.Length; j++)
+                if (x.ingredients.Length > y.ingredients.Length) return 1;
+                else
                 {
-                    for (int k = j; k < pizzas.Length; k++)
-                    {
-                        // Lav en løsning
-                        
-                        solve(teams, pizzas, deliveries);
-                    }
+                    return -1;
                 }
-            }
-            
-            for (int i = 0; i < teams[1]; i++)
+            });
+
+
+            Udregner Udr = new UdregnerImpl(pizzas.ToArray(), teams);
+
+            var del = Udr.Algoritm();
+
+            int score = 0;
+
+            foreach (var d in del)
             {
-                for (int j = 0; j < pizzas.Length; j++)
-                {
-                    for (int k = 0; k < pizzas.Length; k++)
-                    {
-                        for (int l = 0; l < pizzas.Length; l++)
-                        {
-                            // Lav en løsning
-                            solve(teams, pizzas, deliveries);
-                        }
-                    }
-                }
+               score += d.calculateScore();
             }
-            for (int i = 0; i < teams[2]; i++)
-            {
-                for (int j = 0; j < pizzas.Length; j++)
-                {
-                    for (int k = 0; k < pizzas.Length; k++)
-                    {
-                        for (int l = 0; l < pizzas.Length; l++)
-                        {
-                            for (int m = 0; m < pizzas.Length; m++)
-                            {
-                                // Lav en løsning
-                                solve(teams, pizzas, deliveries);
-                            }
-                        }
-                    }
-                }
-            }
+
+            Console.WriteLine(score);
         }
-        
-    }
-
-    public class Udregner
-    {
-        private List<Delivery> deliveries;
-
-
-        public Udregner()
-        {
-            deliveries = new List<Delivery>();
-        }
-
-        public List<Delivery> Algoritm()
-        {
-            deliveries.Add(new Delivery(3));
-
-
-
-        }
-
     }
 
     public class Delivery
@@ -126,7 +77,7 @@ namespace ConsoleApp1
                 ingrediences.AddRange(p.ingredients);
             }
 
-            score = ingrediences.Distinct().Count();
+            score = (int) Math.Pow( ingrediences.Distinct().Count(),2);
 
             return score;
         }
