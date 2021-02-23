@@ -27,7 +27,8 @@ namespace ConsoleApp1
             });*/
 
 
-            Udregner udr = new UdregnerImpl(pizzas.ToArray(), teams);
+            //Udregner udr = new UdregnerImpl(pizzas.ToArray(), teams);
+            Udregner udr = new LucasImpl(pizzas.ToArray(), teams);
 
             var del = udr.getBestDelivery();
 

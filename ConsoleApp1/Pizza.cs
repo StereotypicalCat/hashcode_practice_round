@@ -1,4 +1,6 @@
-﻿namespace ConsoleApp1
+﻿using System;
+
+namespace ConsoleApp1
 {
     public class Pizza
     {
@@ -8,7 +10,5 @@
         {
             this.ingredients = ingredients;
         }
-
-
     }
 }
