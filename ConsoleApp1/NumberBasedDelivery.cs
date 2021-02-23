@@ -20,7 +20,7 @@ namespace ConsoleApp1
             Pizzas.Add(newPizzaIndex);
         }
 
-        public int CalculateScore(List<Pizza> pizzaList)
+        public int CalculateScore(Pizza[] pizzaList)
         {
             int score = 0;
 

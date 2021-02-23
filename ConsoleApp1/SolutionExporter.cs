@@ -23,7 +23,7 @@ namespace ConsoleApp1
         /// </summary>
         /// <param name="solution"></param>
         /// <param name="teamsSizes"></param>
-        public static void ExportSolution(List<NumberBasedDelivery> solution, int[] teamsSizes)
+        public static void ExportSolution(List<NumberBasedDelivery> solution)
         {
             List<String> answerLines = new List<string>();
             
@@ -39,7 +39,10 @@ namespace ConsoleApp1
                 answerLines.Add(line);
             }
 
-            var outputPath = Directory.GetCurrentDirectory() + "\answer.txt";
+            var outputPath = Directory.GetCurrentDirectory() + "\\answer.txt";
+
+            Console.WriteLine("writing file to...:");
+            Console.WriteLine(outputPath);
             
             File.WriteAllLines(outputPath, answerLines);
         }

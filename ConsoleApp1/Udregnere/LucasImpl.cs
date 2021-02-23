@@ -12,11 +12,11 @@ namespace ConsoleApp1.Udregnere
 
         }
         
-        public override List<Delivery> getBestDelivery()
+        public override List<NumberBasedDelivery> getBestDeliveryUsingIndex()
         {
             
             var rarities = getPizzaRarities(pizzas);
-            var deliveries = new List<Delivery>();
+            var deliveries = new List<NumberBasedDelivery>();
 
             bool canContinue = true;
 
@@ -42,7 +42,7 @@ namespace ConsoleApp1.Udregnere
                     candidateAnswers[2] = CreateDeliveryWithSizeOf(4, rarities);
                 }
                 // Select the one with the highest new score.
-                var scores = candidateAnswers.Where(x => x != null).Select(x => x.candidateDelivery.CalculateScore()/x.candidateDelivery.Pizzas.Count).ToArray();
+                var scores = candidateAnswers.Where(x => x != null).Select(x => x.candidateDelivery.CalculateScore(pizzas)/x.candidateDelivery.Pizzas.Count).ToArray();
                 var bestIndex = Array.IndexOf(scores, scores.Max());
 
                 rarities = candidateAnswers[bestIndex].Rarities;
@@ -143,13 +143,13 @@ namespace ConsoleApp1.Udregnere
                 rarities.Add(rarity.Key, copyOfList);
             }
             
-            Delivery candidateDelivery = new Delivery(size);
+            NumberBasedDelivery candidateDelivery = new NumberBasedDelivery(size);
             // Start of with least rarest pizza.
             var leastRarestPizzaRarity = GetRarityOfPizzaWithLeastRarity(rarities);
 
             var offset = pizzas.Length - orignialRarities.Values.SelectMany(t => t).Count();
 
-            candidateDelivery.AddPizza(pizzas[rarities[leastRarestPizzaRarity][0]]);
+            candidateDelivery.AddPizza(rarities[leastRarestPizzaRarity][0]);
             rarities[leastRarestPizzaRarity].RemoveAt(0);
             if (rarities[leastRarestPizzaRarity].Count == 0)
             {
@@ -160,11 +160,11 @@ namespace ConsoleApp1.Udregnere
             {
 
                 var bestPizzas = RaritiesToBestScoreDictionary(rarities,
-                    candidateDelivery.Pizzas.Select(p => p.ingredients).SelectMany(x => x).ToArray());
+                    candidateDelivery.Pizzas.Select(p => pizzas[p].ingredients).SelectMany(x => x).ToArray());
 
                 var indexOfHighestValue = bestPizzas.Keys.Max();
                 
-                candidateDelivery.AddPizza(pizzas[bestPizzas[indexOfHighestValue]]);
+                candidateDelivery.AddPizza(bestPizzas[indexOfHighestValue]);
 
                 foreach (var rarity in rarities)
                 {
@@ -232,6 +232,6 @@ namespace ConsoleApp1.Udregnere
     internal class candidateBestAnswer
     {
         public SortedDictionary<float, List<int>> Rarities { get; set; }
-        public Delivery candidateDelivery { get; set; }
+        public NumberBasedDelivery candidateDelivery { get; set; }
     }
 }

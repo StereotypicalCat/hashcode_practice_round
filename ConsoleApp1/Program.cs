@@ -10,7 +10,7 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            IDataGetter dg = new MockDataStrategyImpl();
+            IDataGetter dg = new FileSystemDataGetter();
 
             var pizzas = dg.getPizzas();
             var teams = dg.getTeams();
@@ -30,13 +30,13 @@ namespace ConsoleApp1
             //Udregner udr = new UdregnerImpl(pizzas.ToArray(), teams);
             Udregner udr = new LucasImpl(pizzas.ToArray(), teams);
 
-            var del = udr.getBestDelivery();
+            var del = udr.getBestDeliveryUsingIndex();
 
             int score = 0;
 
             foreach (var d in del)
             {
-               score += d.CalculateScore();
+               score += d.CalculateScore(pizzas.ToArray());
             }
 
             Console.WriteLine(score);

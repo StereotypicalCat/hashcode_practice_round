@@ -24,7 +24,8 @@ namespace ConsoleApp1
             deliveries = new List<Delivery>();
         }
 
-        public abstract List<Delivery> getBestDelivery();
+        //public abstract List<Delivery> getBestDeliveryUsingDelivery();
+        public abstract List<NumberBasedDelivery> getBestDeliveryUsingIndex();
     }
 
 
