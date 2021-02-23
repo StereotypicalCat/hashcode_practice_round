@@ -8,31 +8,30 @@ namespace ConsoleApp1
     {
         public Delivery(int teamSize)
         {
-            this.teamSize = teamSize;
-            pizzas = new List<Pizza>();
+            this.TeamSize = teamSize;
+            Pizzas = new List<Pizza>();
         }
 
-        public int teamSize { get; set; }
-        public List<Pizza> pizzas;
-
-
+        public int TeamSize { get; set; }
+        public List<Pizza> Pizzas;
+        
         public void AddPizza(Pizza newPizza)
         {
-            pizzas.Add(newPizza);
+            Pizzas.Add(newPizza);
         }
 
-        public int calculateScore()
+        public int CalculateScore()
         {
             int score = 0;
 
-            List<string> ingrediences = new List<string>();
+            List<string> ingredients = new List<string>();
 
-            foreach (Pizza p in pizzas)
+            foreach (Pizza p in Pizzas)
             {
-                ingrediences.AddRange(p.ingredients);
+                ingredients.AddRange(p.ingredients);
             }
 
-            score = (int) Math.Pow( ingrediences.Distinct().Count(),2);
+            score = (int) Math.Pow( ingredients.Distinct().Count(),2);
 
             return score;
         }

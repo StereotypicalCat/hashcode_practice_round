@@ -11,8 +11,11 @@ namespace ConsoleApp1.Udregnere
 
         }
 
-        public override List<Delivery> Algoritm()
+        public override List<Delivery> getBestDelivery()
         {
+            
+            
+            
             int[] newTeams = new int[teams.Length];
             teams.CopyTo(newTeams,0);
 
@@ -71,7 +74,7 @@ namespace ConsoleApp1.Udregnere
             foreach (var v in pizzaStacks)
             {
                 returDeliveries.Add(new Delivery(v.Count));
-                returDeliveries[returDeliveries.Count - 1].pizzas = v;
+                returDeliveries[returDeliveries.Count - 1].Pizzas = v;
             }
 
             return returDeliveries;

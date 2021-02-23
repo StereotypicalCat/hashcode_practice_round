@@ -24,7 +24,7 @@ namespace ConsoleApp1
             deliveries = new List<Delivery>();
         }
 
-        public abstract List<Delivery> Algoritm();
+        public abstract List<Delivery> getBestDelivery();
     }
 
 

@@ -16,28 +16,32 @@ namespace ConsoleApp1
             var teams = dg.getTeams();
 
 
-            pizzas.Sort(delegate (Pizza x, Pizza y)
+            // TODO: Yo kan vi flytte dette til en implementation?
+            /*pizzas.Sort(delegate (Pizza x, Pizza y)
             {
                 if (x.ingredients.Length > y.ingredients.Length) return 1;
                 else
                 {
                     return -1;
                 }
-            });
+            });*/
 
 
-            Udregner Udr = new UdregnerImpl(pizzas.ToArray(), teams);
+            Udregner udr = new UdregnerImpl(pizzas.ToArray(), teams);
 
-            var del = Udr.Algoritm();
+            var del = udr.getBestDelivery();
 
             int score = 0;
 
             foreach (var d in del)
             {
-               score += d.calculateScore();
+               score += d.CalculateScore();
             }
 
             Console.WriteLine(score);
+
+            SolutionExporter.ExportSolution(del);
+
         }
     }
 }
