@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks.Sources;
+using ConsoleApp1;
+using ConsoleApp1.DataStrategy;
+using ConsoleApp1.Udregnere;
 
 namespace ConsoleApp1
 {
@@ -9,19 +10,10 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            var teams = new int[]
-            {
-                1, 2, 1
-            };
+            IDataGetter dg = new MockDataStrategyImpl();
 
-            var pizzas = new List<Pizza>
-            {
-                new Pizza(new []{"onion", "pepper", "olive"}),
-                new Pizza(new []{"mushroom", "tomato", "basil"}),
-                new Pizza(new []{"chicken", "mushroom", "pepper"}),
-                new Pizza(new []{"tomato", "mushroom", "basil"}),
-                new Pizza(new []{"chicken", "basil"})
-            };
+            var pizzas = dg.getPizzas();
+            var teams = dg.getTeams();
 
 
             pizzas.Sort(delegate (Pizza x, Pizza y)
@@ -46,40 +38,6 @@ namespace ConsoleApp1
             }
 
             Console.WriteLine(score);
-        }
-    }
-
-    public class Delivery
-    {
-        public Delivery(int teamSize)
-        {
-            this.teamSize = teamSize;
-            pizzas = new List<Pizza>();
-        }
-
-        public int teamSize { get; set; }
-        public List<Pizza> pizzas;
-
-
-        public void AddPizza(Pizza newPizza)
-        {
-            pizzas.Add(newPizza);
-        }
-
-        public int calculateScore()
-        {
-            int score = 0;
-
-            List<string> ingrediences = new List<string>();
-
-            foreach (Pizza p in pizzas)
-            {
-                ingrediences.AddRange(p.ingredients);
-            }
-
-            score = (int) Math.Pow( ingrediences.Distinct().Count(),2);
-
-            return score;
         }
     }
 }
